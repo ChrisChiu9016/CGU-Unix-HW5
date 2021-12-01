@@ -151,11 +151,17 @@ int LinkedList::search(char* outStr, int max_len, char* t_id){
 void LinkedList::save_to_file(){
     // 開檔
     FILE *fp = fopen("output.txt", "w");    //每次存檔都重新寫入全部的資料。
+    if(fp==0){
+	cout << "無法開啟output.txt\n";
+	return;
+    }
     ListNode *current = head;
 
     while(current!=nullptr){
-        fprintf(fp, "Name:%s\tID:%s\tDeposit:%d\n", current->name, current->id, current->deposit);
-        current = current->next;
+	char buf[100];
+	int length = snprintf(buf, 100, "%s %s %d\n", current->name, current->id, current->deposit);
+	fwrite(buf, 1, length, fp);
+	current = current->next;
     }
     // 關檔
     fclose(fp);
