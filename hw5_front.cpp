@@ -28,7 +28,7 @@ int main(){
     // send command repeatedly
     int x;
     while ((printf("請輸入要使用的功能對應的號碼：\n1: Insert data record\n2: Search data record\n3: Delete data record\n4: List all data record\n5: Close the front-end\n\n選擇功能: "))&&(cin >> x)){
-        if (x > 5 || x < 0)
+        if (x > 5 || x <= 0)
         {   
             system("clear");
             printf("輸入的值有誤，請再試一次。\n");
