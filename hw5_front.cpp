@@ -58,6 +58,7 @@ int main(){
                     write(fd[0], id, sizeof(char) * 10)==-1||
                     write(fd[0], &deposit, sizeof(int))==-1)
                 {
+		    cout << "發生錯誤，請重新再試。\n";
                     return 2;
                 }
                 // get result of insert from back-end
@@ -78,16 +79,19 @@ int main(){
                 printf("請輸入要查詢的ID: ");
                 scanf("%s", target_id);
                 if(write(fd[0], target_id, sizeof(char) * 10)==-1){
-                    return 2;
+                    cout << "發生錯誤，請重新再試。\n";
+			return 2;
                 }
                 system("clear");
                 // get search result
                 int len;
                 char search_result[100];
                 if(read(fd[1], &len, sizeof(int))==-1){
+		        cout << "發生錯誤，請重新再試。\n";
                     return 2;
                 }
                 if(read(fd[1], search_result, sizeof(char) * len)==-1){
+		        cout << "發生錯誤，請重新再試。\n";
                     return 2;
                 }
                 cout << search_result << endl;
@@ -98,12 +102,14 @@ int main(){
                 printf("請輸入要刪除的ID: ");
                 scanf("%s", target_id);
                 if(write(fd[0], target_id, sizeof(char) * 10)==-1){
+		        cout << "發生錯誤，請重新再試。\n";
                     return 2;
                 }
                 system("clear");
                 // get delete result
                 int result;
                 if (read(fd[1], &result, sizeof(int))==-1){
+		    cout << "發生錯誤，請重新再試。\n";
                     return 2;
                 }
                 if(result==0)
@@ -132,12 +138,14 @@ int main(){
                 for (int i = 0; i < data_count; i++)
                 {
                     if(read(fd[1], &data_length[i], sizeof(int)) == -1){
+		        cout << "發生錯誤，請重新再試。\n";
                         return 2;
                     }
                 }
                 // 再依照長度個別接收data[i]
                 for (int i = 0; i < data_count; i++){
                     if(read(fd[1], data[i], sizeof(char)*data_length[i]) == -1){
+		        cout << "發生錯誤，請重新再試。\n";
                         return 2;
                     }
                     cout << data[i];

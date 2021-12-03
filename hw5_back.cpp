@@ -187,16 +187,25 @@ int main(){
     // 主要功能：按照選擇的功能執行任務
     while(1){
         int x = 0;
-        if (read(fd[0], &x, sizeof(int)) == -1){
+        int rd = read(fd[0], &x, sizeof(int));
+        if (rd == -1){
             return 2;
         }
         if(x==1){   // insert data record
             char id[10], name[20];
             int deposit;
             // get 3 parameters from front-end
-            read(fd[0], name, sizeof(char) * 20);
-            read(fd[0], id, sizeof(char) * 10);
-            read(fd[0], &deposit, sizeof(int));
+    	    int rd0 = read(fd[0], name, sizeof(char) * 20);
+    	    int rd1 = read(fd[0], id, sizeof(char) * 10);
+    	    int rd2 = read(fd[0], &deposit, sizeof(int));
+    	    if(rd0==-1||rd1==-1||rd2==-1){
+    		return 2;
+    	    }
+    	    else if(rd0==0||rd1==0||rd2==0){
+        	   	cout << "前端異常中止。\n";
+                x=0;
+        	   	continue;
+    	    }
             // send back the result of insert
             int insert_result = linked_list.Push_back(name, id, deposit);
             if (write(fd[1], &insert_result, sizeof(int)) == -1)
@@ -207,9 +216,15 @@ int main(){
         else if(x==2){  //search data record
             // get target id
             char target_id[10];
-            if(read(fd[0], target_id, sizeof(char) * 10)==-1){
+            int rd = read(fd[0], target_id, sizeof(char) * 10);
+            if(rd==-1){
                 return 2;
             }
+    	    else if(rd==0){
+        	   	cout << "前端異常中止。\n";
+                x=0;
+        	   	continue;    
+    	    }
             // get result of search
             char search_result[100];
             int result_length = linked_list.search(search_result, 100, target_id);
@@ -223,9 +238,15 @@ int main(){
         }
         else if(x==3){  // delete data record
             char target_id[10];
-            if(read(fd[0], target_id, sizeof(char) * 10)==-1){
+            int rd = read(fd[0], target_id, sizeof(char) * 10);
+            if(rd==-1){
                 return 2;
             }
+            else if(rd==0){
+        	   	cout << "前端異常中止。\n";
+                x=0;
+        	   	continue;    
+	        }
             // try to delete data record
             int result = linked_list.Delete(target_id);
             // send result back to front-end
@@ -267,7 +288,7 @@ int main(){
             }
         }
         // auto save after list edited
-        if(x!=0&&x!=4){
+        if(x==0||x==4){
             linked_list.save_to_file();
         }
         // x初始化，避免等待前端時發生錯誤。
